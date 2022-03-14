@@ -22,4 +22,21 @@ FROM OCCUPATIONS
 GROUP BY Occupation
 ORDER BY count(Occupation), Occupation;
 
+-- Q3 Occupations
+-- Oracle
+SELECT Doctor, Professor, Singer, Actor FROM (
+SELECT ROW_NUMBER() OVER (PARTITION BY occupation ORDER BY name) as rn, name, occupation FROM occupations) 
+PIVOT 
+(MAX(name) FOR occupation IN ('Doctor' as Doctor,'Professor' as Professor, 'Singer' as Singer, 'Actor' as Actor)) 
+ORDER BY rn;
 
+-- Q4 Binary Tree Nodes
+-- First search root
+-- If any of the nodes in column 'N' are in Parent column 'P' it will be treated as an inner node.
+SELECT CASE
+WHEN P IS NULL THEN CONCAT(N,' Root')
+WHEN N IN (SELECT DISTINCT P FROM BST) THEN CONCAT(N,' Inner')
+ELSE CONCAT(N,' Leaf')
+END
+FROM BST
+ORDER BY N ASC
