@@ -93,3 +93,21 @@ FROM STATION
 
 -- Q17 Weather Observation Station 20
 -- MySql
+-- Solution one
+SELECT t.lat FROM 
+(SELECT ROUND(LAT_N,4) as lat,
+ROW_NUMBER() over(order by LAT_N ASC) AS row_num
+FROM  STATION
+order by row_num ) t
+where t.row_num = CEILING((SELECT COUNT(*)+1 FROM STATION s)/2)
+-- solution two
+SELECT t.lat FROM 
+(SELECT ROUND(LAT_N,4) as lat,
+ROW_NUMBER() over(order by LAT_N ASC) AS row_num
+FROM  STATION
+order by row_num ) t
+where 
+t.row_num = (SELECT 
+	CASE WHEN MOD(COUNT(*),2)=0 THEN ROUND(COUNT(*)/2 + 1) else round((COUNT(*)+1)/2) End 
+	FROM STATION s 
+	)
